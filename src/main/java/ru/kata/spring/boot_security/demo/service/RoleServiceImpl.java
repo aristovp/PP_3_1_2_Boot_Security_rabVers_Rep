@@ -4,32 +4,29 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.kata.spring.boot_security.demo.dao.RoleDao;
 import ru.kata.spring.boot_security.demo.model.Role;
-import ru.kata.spring.boot_security.demo.repository.RoleRepository;
-
-
 import javax.transaction.Transactional;
 import java.util.List;
-import java.util.Set;
+
 
 @Service
 @Transactional
 public class RoleServiceImpl implements RoleService{
 
-    private final RoleRepository roleRepository;
+    private final RoleDao roleRepository;
 
     @Autowired
-    public RoleServiceImpl(RoleRepository roleRepository) {
+    public RoleServiceImpl(RoleDao roleRepository) {
         this.roleRepository = roleRepository;
     }
 
     @Override
     public List<Role> getAllRoles() {
-        return roleRepository.findAll();
+        return roleRepository.getAllRoles();
     }
 
     @Override
     public Role getRoleById(Long id) {
-        return roleRepository.getById(id);
+        return roleRepository.getRoleById(id);
     }
 
     @Override
@@ -46,6 +43,6 @@ public class RoleServiceImpl implements RoleService{
 
     @Override
     public void delete(Long id) {
-        roleRepository.deleteById(id);
+        roleRepository.delete(id);
     }
 }
