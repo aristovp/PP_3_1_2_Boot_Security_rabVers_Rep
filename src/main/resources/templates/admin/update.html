@@ -16,6 +16,19 @@
     <label for="email"> Enter email: </label>
     <input type="text" th:field="*{email}" id="email"/>
     <br/>
+    <label for="password"> Enter password: </label>
+    <input type="text" th:field="*{password}" id="password"/>
+    <br/>
+
+    <p>role: </p>
+    <label>
+        <input type="checkbox" th:name="roles" value="USER" checked>
+    </label>USER
+    <label>
+        <input type="checkbox" th:name="roles" value="ADMIN">
+    </label>ADMIN
+    <br/>
+
     <input type="submit" value="Update!">
 </form>
 

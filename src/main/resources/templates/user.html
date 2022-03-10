@@ -13,6 +13,7 @@
         <th scope="col">FirstName</th>
         <th scope="col">LastName</th>
         <th scope="col">Email</th>
+        <th scope="col">Role</th>
     </tr>
     </thead>
 
@@ -22,6 +23,7 @@
         <td th:text="${user.getFirstName()}"/>
         <td th:text="${user.getLastName()}"/>
         <td th:text="${user.getEmail()}"/>
+        <td th:text="${user.getRoles()}"/>
     </tr>
     </tbody>
 </table>

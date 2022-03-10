@@ -5,6 +5,8 @@ import ru.kata.spring.boot_security.demo.model.Role;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -17,12 +19,13 @@ public class RoleDaoImpl implements RoleDao {
 
     @Override
     public List<Role> getAllRoles() {
-        return (List<Role>) em.createQuery("from Role").getResultStream().collect(Collectors.toSet());
+        return em.createQuery("from Role", Role.class).getResultList();
     }
 
     @Override
     public Role getRoleById(Long id) {
-        return em.find(Role.class, id);
+        return (Role) em.createQuery("from Role r where r.id=:id")
+                .setParameter("id", id).getSingleResult();
     }
 
     @Override
@@ -31,15 +34,43 @@ public class RoleDaoImpl implements RoleDao {
     }
 
     @Override
-    public void update(Long id, Role updatedRole) {
+    public void update(Role updatedRole) {
         em.merge(updatedRole);
     }
 
     @Override
     public void delete(Long id) {
-        em.createQuery("delete from Role role where role.id = ?1")
+        em.createQuery("delete from Role name where name.id = ?1")
                 .setParameter(1, id)
                 .executeUpdate();
+    }
+
+    @Override
+    public Role getRoleByName(String roleName) {
+
+        return (Role) em.createQuery("from Role r where r.name=:name")
+                .setParameter("name", roleName)
+                .getSingleResult();
+    }
+
+    @Override
+    public List<Role> setRoleByName(String name, String[] rolesName) {
+        List<Role> roleSet = new ArrayList<>();
+        if (rolesName != null) {
+            for (String roleName : rolesName) {
+                roleSet.add(getRoleByName(roleName));
+            }
+        }
+        return roleSet;
+    }
+
+    @Override
+    public List<Role> setRoles(String[] rolesNames) {
+        List<Role> roleSet = new ArrayList<>();
+        for (String role : rolesNames) {
+            roleSet.add(getRoleByName(role));
+        }
+        return roleSet;
     }
 
 

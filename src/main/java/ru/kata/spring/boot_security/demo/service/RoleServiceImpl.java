@@ -45,4 +45,19 @@ public class RoleServiceImpl implements RoleService{
     public void delete(Long id) {
         roleRepository.delete(id);
     }
+
+    @Override
+    public Role getRoleByName(String roleName) {
+        return roleRepository.getRoleByName(roleName);
+    }
+
+    @Override
+    public List<Role> setRoleByName(String name, String[] rolesName) {
+        return roleRepository.setRoleByName(name, rolesName);
+    }
+
+    @Override
+    public List<Role> setRoles(String[] rolesNames) {
+        return roleRepository.setRoles(rolesNames);
+    }
 }

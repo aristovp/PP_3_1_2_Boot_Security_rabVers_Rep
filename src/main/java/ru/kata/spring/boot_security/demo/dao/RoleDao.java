@@ -9,7 +9,10 @@ public interface RoleDao {
     List<Role> getAllRoles();
     Role getRoleById(Long id);
     void save(Role role);
-    void update(Long id, Role updatedRole);
+    void update(Role updatedRole);
     void delete(Long id);
+    Role getRoleByName(String roleName);
+    List<Role> setRoleByName(String name, String[] rolesName);
+    List<Role> setRoles(String[] rolesNames);
 
 }
