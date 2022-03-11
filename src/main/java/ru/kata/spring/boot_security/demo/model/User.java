@@ -33,24 +33,27 @@ public class User implements UserDetails {
     @Column(name = "password")
     private String password;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.REFRESH)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     @JoinTable(name = "users_roles",
-            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
-    private List<Role> roles;
+            joinColumns = @JoinColumn(name = "user_id"),  //, referencedColumnName = "id"
+            inverseJoinColumns = @JoinColumn(name = "role_id")) //, referencedColumnName = "id"
+    private Set<Role> roles = new HashSet<>();
 
     public User() {}
 
-    public User(String firstName, String lastName, String email, String password, List<Role> roles) {
+    public User(String firstName, String lastName, String email, String password) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.password = password;
-        this.roles = roles;
     }
 
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getFirstName() {
@@ -85,12 +88,15 @@ public class User implements UserDetails {
         this.password = new BCryptPasswordEncoder(8).encode(password);
     }
 
-    public List<Role> getRoles() {
+    public Set<Role> getRoles() {
         return roles;
     }
 
-    public void setRoles(List<Role> roles) {
-        this.roles = roles;
+    public void setRoles(Role role) {
+        if (this.roles == null) {
+            this.roles = new HashSet<>();
+        }
+        this.roles.add(role);
     }
 
     @Override
@@ -121,6 +127,15 @@ public class User implements UserDetails {
     @Override
     public String getUsername() {
         return getEmail();
+    }
+
+    public String getUserRole() {
+        String role = getRoles().toString();
+        if (role != null) {
+            return role;
+        } else {
+            return "User not Role";
+        }
     }
 
     @Override

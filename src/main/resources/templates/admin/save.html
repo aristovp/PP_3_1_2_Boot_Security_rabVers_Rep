@@ -21,8 +21,7 @@
     <br/>
 
     <p>role: </p>
-    <input type="checkbox" th:name="roles" value="USER" checked>USER
-    <input type="checkbox" th:name="roles" value="ADMIN">ADMIN
+    <span th:each="role : ${roles}"><input type="checkbox" name="roleId" th:value="${role.id}" th:utext="${role.name}"/></span>
 
     <input type="submit" value="Create!">
 </form>
