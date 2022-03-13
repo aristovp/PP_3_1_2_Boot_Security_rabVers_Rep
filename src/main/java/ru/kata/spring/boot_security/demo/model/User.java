@@ -4,9 +4,10 @@ package ru.kata.spring.boot_security.demo.model;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.Min;
 import javax.persistence.*;
+import javax.validation.constraints.Size;
 import java.util.*;
 
 @Entity
@@ -19,33 +20,38 @@ public class User implements UserDetails {
     private Long id;
 
     @Column(name = "first_name")
-    @NotEmpty
-    private String firstName;
+    private String name;
 
     @Column(name = "last_name")
-    @NotEmpty
     private String lastName;
 
+    @Column(name = "age")
+    private Integer age;
+
     @Column(name = "email")
-    @NotEmpty
+    @Email
     private String email;
 
     @Column(name = "password")
     private String password;
 
+
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     @JoinTable(name = "users_roles",
-            joinColumns = @JoinColumn(name = "user_id"),  //, referencedColumnName = "id"
-            inverseJoinColumns = @JoinColumn(name = "role_id")) //, referencedColumnName = "id"
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
 
     public User() {}
 
-    public User(String firstName, String lastName, String email, String password) {
-        this.firstName = firstName;
+    public User(String password, Long id, String firstName, String lastName, Integer age, String email, Set<Role> roles ) {
+        this.name = firstName;
         this.lastName = lastName;
         this.email = email;
         this.password = password;
+        this.id = id;
+        this.roles = roles;
+        this.age = age;
     }
 
     public Long getId() {
@@ -56,12 +62,12 @@ public class User implements UserDetails {
         this.id = id;
     }
 
-    public String getFirstName() {
-        return firstName;
+    public String getName() {
+        return name;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
+    public void setName(String firstName) {
+        this.name = firstName;
     }
 
     public String getLastName() {
@@ -92,11 +98,21 @@ public class User implements UserDetails {
         return roles;
     }
 
-    public void setRoles(Role role) {
-        if (this.roles == null) {
-            this.roles = new HashSet<>();
-        }
-        this.roles.add(role);
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
+    }
+
+    public Integer getAge() {
+        return age;
+    }
+
+    public void setAge(Integer age) {
+        this.age = age;
+    }
+
+    @Override
+    public String getUsername() {
+        return email;
     }
 
     @Override
@@ -124,40 +140,25 @@ public class User implements UserDetails {
         return getRoles();
     }
 
-    @Override
-    public String getUsername() {
-        return getEmail();
-    }
-
-    public String getUserRole() {
-        String role = getRoles().toString();
-        if (role != null) {
-            return role;
-        } else {
-            return "User not Role";
+    public String getRolesToString() {
+        StringBuilder sb = new StringBuilder();
+        for (Role role : roles) {
+            sb.append(role.toString());
+            sb.append(" ");
         }
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof User)) return false;
-        User user = (User) o;
-        return Objects.equals(getFirstName(), user.getFirstName()) && Objects.equals(getLastName(), user.getLastName()) && Objects.equals(getEmail(), user.getEmail());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getFirstName(), getLastName(), getEmail());
+        return sb.toString();
     }
 
     @Override
     public String toString() {
         return "User{" +
-                ", id=" + id +
-                ", firstName='" + firstName + '\'' +
+                "id=" + id +
+                ", firstName='" + name + '\'' +
                 ", lastName='" + lastName + '\'' +
+                ", age=" + age +
                 ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", roles=" + roles +
                 '}';
     }
 }

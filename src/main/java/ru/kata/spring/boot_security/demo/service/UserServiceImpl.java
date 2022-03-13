@@ -1,13 +1,10 @@
 package ru.kata.spring.boot_security.demo.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.kata.spring.boot_security.demo.model.Role;
 import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.repository.UserRepository;
 import java.util.List;
@@ -49,54 +46,18 @@ public class UserServiceImpl implements UserService {
         userRepository.deleteById(id);
     }
 
+    @Transactional
     @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        return userRepository.getUserByUserName(email);
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        User user = userRepository.findByEmail(username);
+        if (user == null) throw new UsernameNotFoundException(String.format("User %s not found", username));
+        return user;
+    }
+
+    @Transactional
+    @Override
+    public void editUser(User user) {
+        userRepository.saveAndFlush(user);
     }
 }
 
-
-//
-////    @Override
-////    @Transactional
-////    public void userUpdate(Long id, User updatedUser) {
-////        userRepository.update(id, updatedUser);
-////    }
-//
-//    @Override
-//    @Transactional
-//    public void userUpdate(Long id, User userUpdate) {
-//        User userUpd = getByIdUser(id);
-//        userUpd.setFirstName(userUpdate.getFirstName());
-//        userUpd.setLastName(userUpdate.getLastName());
-//        userUpd.setEmail(userUpdate.getEmail());
-//    }
-//
-//
-//    @Override
-//    public UserDetails findUserByEmail(String email) throws UsernameNotFoundException {
-//        User user = userRepository.findByEmail(email);
-//
-//        if (user == null) {
-//            throw new UsernameNotFoundException(String.format("no such username %s", email));
-//        }
-//        return user;
-//    }
-//
-//    public void setRoleByUser(User user, String[] roles) {
-//        Role role = new Role();
-//        for (String rol : roles) {
-//            role.setName(rol);
-//            user.setRoles(role);
-//        }
-//    }
-////
-////    private Collection<? extends GrantedAuthority> mapRolesToAuthorities(Collection<Role> roles) {
-////        return roles.stream().map(role -> new SimpleGrantedAuthority(role.getName())).collect(Collectors.toList());
-////    }
-//
-////    @Override
-////    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-////        return userRepository.findByEmail(username);
-////    }
-//}
