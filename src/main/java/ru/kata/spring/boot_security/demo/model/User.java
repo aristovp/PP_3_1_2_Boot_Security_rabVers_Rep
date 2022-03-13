@@ -29,7 +29,6 @@ public class User implements UserDetails {
     private Integer age;
 
     @Column(name = "email")
-    @Email
     private String email;
 
     @Column(name = "password")

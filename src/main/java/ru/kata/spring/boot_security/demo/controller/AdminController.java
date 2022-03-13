@@ -2,12 +2,14 @@ package ru.kata.spring.boot_security.demo.controller;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ru.kata.spring.boot_security.demo.model.Role;
 import ru.kata.spring.boot_security.demo.model.User;
+import ru.kata.spring.boot_security.demo.repository.UserRepository;
 import ru.kata.spring.boot_security.demo.service.RoleService;
 import ru.kata.spring.boot_security.demo.service.UserService;
 import java.security.Principal;
@@ -22,12 +24,14 @@ public class AdminController {
 
     private UserService userService;
     private RoleService roleService;
+    private UserRepository userRepository;
 
 
     @Autowired
-    public AdminController(UserService userService, RoleService roleService) {
+    public AdminController(UserService userService, RoleService roleService, UserRepository userRepository) {
         this.userService = userService;
         this.roleService = roleService;
+        this.userRepository = userRepository;
     }
 
     @GetMapping("/admin")
@@ -76,8 +80,8 @@ public class AdminController {
         if (roleAdmin != null && roleAdmin.equals("ADMIN")) {
             roles.add(roleService.getRole("ADMIN"));
         }
-
         user.setRoles(roles);
+
         userService.saveUser(user);
         return "redirect:/admin";
     }
