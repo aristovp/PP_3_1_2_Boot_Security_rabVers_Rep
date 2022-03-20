@@ -5,8 +5,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.kata.spring.boot_security.demo.model.Role;
 import ru.kata.spring.boot_security.demo.repository.RoleRepository;
-import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.List;
+
 
 
 @Service
@@ -20,8 +20,8 @@ public class RoleServiceImpl implements RoleService{
     }
 
     @Override
-    public Set<Role> getAllRoles() {
-        return roleRepository.findAll().stream().collect(Collectors.toSet());
+    public List<Role> getAllRoles() {
+        return roleRepository.findAll();
     }
 
     @Transactional
@@ -30,6 +30,7 @@ public class RoleServiceImpl implements RoleService{
         roleRepository.save(role);
     }
 
+    @Transactional
     @Override
     public void deleteRoleById(Long id) {
         roleRepository.deleteById(id);

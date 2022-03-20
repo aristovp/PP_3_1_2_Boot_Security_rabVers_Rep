@@ -1,6 +1,7 @@
 package ru.kata.spring.boot_security.demo.model;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -20,7 +21,7 @@ public class User implements UserDetails {
     private Long id;
 
     @Column(name = "first_name")
-    private String name;
+    private String firstName;
 
     @Column(name = "last_name")
     private String lastName;
@@ -43,8 +44,8 @@ public class User implements UserDetails {
 
     public User() {}
 
-    public User(String password, Long id, String firstName, String lastName, Integer age, String email, Set<Role> roles ) {
-        this.name = firstName;
+    public User(Long id, String firstName, String lastName, Integer age, String email, String password, Set<Role> roles ) {
+        this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.password = password;
@@ -61,12 +62,12 @@ public class User implements UserDetails {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setName(String firstName) {
-        this.name = firstName;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
     public String getLastName() {
@@ -90,7 +91,7 @@ public class User implements UserDetails {
     }
 
     public void setPassword(String password) {
-        this.password = new BCryptPasswordEncoder(8).encode(password);
+        this.password = password;
     }
 
     public Set<Role> getRoles() {
@@ -115,26 +116,31 @@ public class User implements UserDetails {
     }
 
     @Override
+    @JsonIgnore
     public boolean isAccountNonExpired() {
         return true;
     }
 
     @Override
+    @JsonIgnore
     public boolean isAccountNonLocked() {
         return true;
     }
 
     @Override
+    @JsonIgnore
     public boolean isCredentialsNonExpired() {
         return true;
     }
 
     @Override
+    @JsonIgnore
     public boolean isEnabled() {
         return true;
     }
 
     @Override
+    @JsonIgnore
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return getRoles();
     }
@@ -152,12 +158,22 @@ public class User implements UserDetails {
     public String toString() {
         return "User{" +
                 "id=" + id +
-                ", firstName='" + name + '\'' +
+                ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", age=" + age +
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
                 ", roles=" + roles +
                 '}';
+    }
+
+    public User addRoleToUser(Role role) {
+        this.roles.add(role);
+        return this;
+    }
+
+    public User addRolesToUser(Role... role) {
+        this.roles.addAll(Arrays.asList(role));
+        return this;
     }
 }

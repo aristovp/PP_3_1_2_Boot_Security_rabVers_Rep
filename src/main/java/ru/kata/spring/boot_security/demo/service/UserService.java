@@ -14,5 +14,6 @@ public interface UserService extends UserDetailsService{
     void deleteUserById(Long id);
     UserDetails loadUserByUsername(String email);
     void editUser(User user);
+    boolean existsById(Long id);
 
 }
